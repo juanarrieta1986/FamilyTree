@@ -8,7 +8,8 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User
+from models import db, Relationships, Person, Parents, Children
+import flask
 #from models import Person
 
 app = Flask(__name__)
