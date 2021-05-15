@@ -15,7 +15,7 @@ class Relationships(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "name": self.email,
+            "name": self.name,
         }
 
 class Person(db.Model):
@@ -31,19 +31,19 @@ class Person(db.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "name": self.email,
-            "lastName": self.email,
-            "age": self.email,
+            "name": self.name,
+            "lastName": self.lastName,
+            "age": self.age,
         }
     
-class Parents(db.Model):
-    __tablename__ = 'parents'
+class Relative(db.Model):
+    __tablename__ = 'relative'
     id = db.Column(db.Integer, primary_key=True)
     personID = db.Column(db.Integer, ForeignKey('person.id'), unique=False, nullable=False)
-    parentID = db.Column(db.Integer, ForeignKey('person.id'), unique=False, nullable=False)
+    relativeID = db.Column(db.Integer, ForeignKey('person.id'), unique=False, nullable=False)
     relationshipID = db.Column(db.Integer, ForeignKey('relationships.id'), unique=False, nullable=False)
     Person = relationship("Person", foreign_keys=[personID])
-    Parent = relationship("Person", foreign_keys=[parentID])
+    Relative = relationship("Person", foreign_keys=[relativeID])
     Relationships = relationship(Relationships)
 
     def __repr__(self):
@@ -53,27 +53,27 @@ class Parents(db.Model):
         return {
             "id": self.id,
             "personID": self.personID,
-            "parentID": self.parentID,
+            "relativeID": self.relativeID,
             "relationship": self.relationshipID,
         }
 
-class Children(db.Model):
-    __tablename__ = 'children'
-    id = db.Column(db.Integer, primary_key=True)
-    personID = db.Column(db.Integer, ForeignKey('person.id'), unique=False, nullable=False)
-    childID = db.Column(db.Integer, ForeignKey('person.id'), unique=False, nullable=False)
-    relationshipID = db.Column(db.Integer, ForeignKey('relationships.id'), unique=False, nullable=False)
-    Person = relationship("Person", foreign_keys=[personID])
-    Child = relationship("Person", foreign_keys=[childID])
-    Relationships = relationship(Relationships)
+#class Children(db.Model):
+#    __tablename__ = 'children'
+#    id = db.Column(db.Integer, primary_key=True)
+#    personID = db.Column(db.Integer, ForeignKey('person.id'), unique=False, nullable=False)
+#    childID = db.Column(db.Integer, ForeignKey('person.id'), unique=False, nullable=False)
+#    relationshipID = db.Column(db.Integer, ForeignKey('relationships.id'), unique=False, nullable=False)
+#    Person = relationship("Person", foreign_keys=[personID])
+#    Child = relationship("Person", foreign_keys=[childID])
+#    Relationships = relationship(Relationships)
 
-    def __repr__(self):
-        return '<Children %r>' % self.personID
+#    def __repr__(self):
+#        return '<Children %r>' % self.personID
 
-    def serialize(self):
-        return {
-            "id": self.id,
-            "personID": self.personID,
-            "childID": self.childID,
-            "relationship": self.relationshipID,
-        }
+#    def serialize(self):
+#        return {
+#            "id": self.id,
+#            "personID": self.personID,
+#            "childID": self.childID,
+#            "relationship": self.relationshipID,
+#        }

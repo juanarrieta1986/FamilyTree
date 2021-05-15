@@ -8,8 +8,9 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, Relationships, Person, Parents, Children
+from models import db, Relationships, Person, Relative
 import flask
+import json
 #from models import Person
 
 app = Flask(__name__)
@@ -39,6 +40,66 @@ def handle_hello():
     }
 
     return jsonify(response_body), 200
+
+@app.route('/all', methods=['GET'])
+def all():
+
+    everyone = Person.query.all()
+    everyone = list(map(lambda x: x.serialize(), everyone))
+
+    if everyone is not None:
+        return jsonify(everyone), 200
+    else:
+        return jsonify({"msg": "Family Tree Has no Data"}), 401
+
+@app.route('/member/<int:id>', methods=['GET'])
+def member(id):
+    
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "lastName": self.lastName,
+            "age": self.age,
+        }
+
+    everyone = Person.query.filter_by(id=id)
+    everyone = list(map(lambda x: x.serialize(), everyone))
+
+    #Here starts extracting data for parents
+    parentsDetails = Person.query\
+    .join(Relative, Person.id==Relative.relativeID)\
+    .add_columns(Person.id, Person.name, Person.lastName, Person.age)\
+    .filter_by(personID=id, relationshipID=1)#\
+    
+    dataParent = []
+    for x in parentsDetails:
+        dataParent.append({"id": x.id, "name": x.name, "lastname": x.lastName, "age": x.age})
+
+    #Here starts extracting data for children
+    childrenDetails = Person.query\
+    .join(Relative, Person.id==Relative.relativeID)\
+    .add_columns(Person.id, Person.name, Person.lastName, Person.age)\
+    .filter_by(personID=id, relationshipID=2)#\
+    
+    dataChildren = []
+    for x in childrenDetails:
+        dataChildren.append({"id": x.id, "name": x.name, "lastname": x.lastName, "age": x.age})
+    #Here end extracting data for children
+
+    return jsonify(everyone,{"Parent": dataParent},{"Children": dataChildren}), 200
+
+#TEST ENDPOINT, NOT PART OF THE REQUIREMENTS OF THE EXCERCISE
+@app.route('/relationships', methods=['GET'])
+def relationships():
+
+    relations = Relationships.query.all()
+    relations = list(map(lambda x: x.serialize(), relations))
+
+    if relations is not None:
+        return jsonify(relations), 200
+    else:
+        return jsonify({"msg": "Family Tree Has no Data"}), 401
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
