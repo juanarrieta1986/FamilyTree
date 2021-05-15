@@ -70,7 +70,7 @@ def member(id):
     parentsDetails = Person.query\
     .join(Relative, Person.id==Relative.personID)\
     .add_columns(Person.id, Person.name, Person.lastName, Person.age)\
-    .filter_by(relativeID=id, relationshipID=2)#\
+    .filter_by(relativeID=id, relationshipID=1)#\
     
     dataParent = []
     for x in parentsDetails:
@@ -80,7 +80,7 @@ def member(id):
     childrenDetails = Person.query\
     .join(Relative, Person.id==Relative.relativeID)\
     .add_columns(Person.id, Person.name, Person.lastName, Person.age)\
-    .filter_by(personID=id, relationshipID=2)#\
+    .filter_by(personID=id, relationshipID=1)#\
     
     dataChildren = []
     for x in childrenDetails:
@@ -105,9 +105,7 @@ def relationships():
 def setDB():
 
     relationshipType = ["Child"]
-    personName = [["Ana","Arias","65"],["Carlos","Soto","67"],["Maria","Soto","25"],["Juan","Soto","30"],["Carlos","Soto","32"],["Ivan","Soto","8"],["Pedro","Castro","7"]]
-    #personLast = ["Arias","Soto","Soto","Soto","Soto","Soto","Castro"]
-    #personName = ["65","67","25","30","32","8","7"]
+    personName = [["Ana","Arias","65"],["Carlos","Soto","67"],["Maria","Soto","25"],["Juan","Soto","30"],["Carla","Soto","32"],["Ivan","Soto","8"],["Pedro","Castro","7"]]
     relationsAna = [3,4,5]
     relationsCarlos = [3,4,5]
     relationsJuan = [6]
@@ -116,10 +114,9 @@ def setDB():
     for x in relationshipType:
         relationship = Relationships()
         relationship.name = x
-        #db.session.add(relationship)
-        #db.session.commit()
+        db.session.add(relationship)
+        db.session.commit()
 
-    #contador = 0
     for x in personName:
         newPerson = Person()
         newPerson.name = x[0]
@@ -127,7 +124,6 @@ def setDB():
         newPerson.age = x[2]
         db.session.add(newPerson)
         db.session.commit()
-        #contador = contador + 1
     
     for x in relationsAna:
         newRelative = Relative()
