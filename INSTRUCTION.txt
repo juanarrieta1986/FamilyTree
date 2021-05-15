@@ -1,0 +1,4 @@
+Data base is empty, in order to use it:
+1. Create relatioship type:
+    a. First add "Parent" (without quotes)
+    b. Second add "Child" (without quotes)

@@ -68,9 +68,9 @@ def member(id):
 
     #Here starts extracting data for parents
     parentsDetails = Person.query\
-    .join(Relative, Person.id==Relative.relativeID)\
+    .join(Relative, Person.id==Relative.personID)\
     .add_columns(Person.id, Person.name, Person.lastName, Person.age)\
-    .filter_by(personID=id, relationshipID=1)#\
+    .filter_by(relativeID=id, relationshipID=2)#\
     
     dataParent = []
     for x in parentsDetails:
@@ -100,6 +100,67 @@ def relationships():
         return jsonify(relations), 200
     else:
         return jsonify({"msg": "Family Tree Has no Data"}), 401
+
+@app.route('/setDB', methods=['GET'])
+def setDB():
+
+    relationshipType = ["Child"]
+    personName = [["Ana","Arias","65"],["Carlos","Soto","67"],["Maria","Soto","25"],["Juan","Soto","30"],["Carlos","Soto","32"],["Ivan","Soto","8"],["Pedro","Castro","7"]]
+    #personLast = ["Arias","Soto","Soto","Soto","Soto","Soto","Castro"]
+    #personName = ["65","67","25","30","32","8","7"]
+    relationsAna = [3,4,5]
+    relationsCarlos = [3,4,5]
+    relationsJuan = [6]
+    relationsCarla = [7]
+
+    for x in relationshipType:
+        relationship = Relationships()
+        relationship.name = x
+        #db.session.add(relationship)
+        #db.session.commit()
+
+    #contador = 0
+    for x in personName:
+        newPerson = Person()
+        newPerson.name = x[0]
+        newPerson.lastName = x[1]
+        newPerson.age = x[2]
+        db.session.add(newPerson)
+        db.session.commit()
+        #contador = contador + 1
+    
+    for x in relationsAna:
+        newRelative = Relative()
+        newRelative.personID = Person.query.filter_by(name="Ana").first().id
+        newRelative.relativeID = x
+        newRelative.relationshipID = 1
+        db.session.add(newRelative)
+        db.session.commit()
+    
+    for x in relationsCarlos:
+        newRelative = Relative()
+        newRelative.personID = Person.query.filter_by(name="Carlos").first().id
+        newRelative.relativeID = x
+        newRelative.relationshipID = 1
+        db.session.add(newRelative)
+        db.session.commit()
+
+    for x in relationsJuan:
+        newRelative = Relative()
+        newRelative.personID = Person.query.filter_by(name="Juan").first().id
+        newRelative.relativeID = x
+        newRelative.relationshipID = 1
+        db.session.add(newRelative)
+        db.session.commit()
+
+    for x in relationsCarla:
+        newRelative = Relative()
+        newRelative.personID = Person.query.filter_by(name="Carla").first().id
+        newRelative.relativeID = x
+        newRelative.relationshipID = 1
+        db.session.add(newRelative)
+        db.session.commit()
+
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
